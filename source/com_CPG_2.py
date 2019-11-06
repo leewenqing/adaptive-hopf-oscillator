@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 class com_CPG():
     def __init__(self,
-                 n = 2000000,
+                 n = 1000000,
                  dt = 0.001,
                  mu = 1, 
                  eps = 0.9,
@@ -21,13 +21,13 @@ class com_CPG():
         self.z = np.exp(1j*np.random.random(self.num)*2*np.pi) # shape (num,)
         self.alpha = np.random.random(self.num) #shape (num,) 
         self.F = np.zeros(self.n) # shape (n,)
-        self.Aomega = np.zeros((self.num, self.n)) # shape (num, n)
+        self.Aomega = np.zeros((self.num, self.n), dtype = np.complex128) # shape (num, n)
         self.Az = np.zeros((self.num, self.n), dtype = np.complex128)
-        self.Aalpha = np.zeros((self.num, self.n)) # shape (num, n)
+        self.Aalpha = np.zeros((self.num, self.n), dtype = np.complex128) # shape (num, n)
         self.Ar = np.zeros((self.num, self.n)) # shape (num, n)
         self.Aph = np.zeros((self.num, self.n)) # shape (num, n)
         self.t = np.arange(0,n)*self.dt # shape (n,)
-        self.st = np.zeros(self.n) # shape (n,)
+        self.st = np.zeros(self.n, dtype = np.complex128) # shape (n,)
         self.et = np.zeros(self.n, dtype = np.complex128) # shape (n,)
         omega_input = [5, 10, 15, 20]
         I_max = [1.1, 0.8, 1.5, 0.7]
@@ -44,7 +44,7 @@ class com_CPG():
             self.Aomega[:, i] = self.omega
             self.Aalpha[:, i] = self.alpha
             self.st[i] = np.sum(self.alpha*self.z.real)
-            self.et[i] = self.F[i] - self.st[i]
+            self.et[i] = self.Freal[i] - self.st[i]
             #print(self.dz(self.z, i, self.omega))
             self.z = self.z + self.dz(self.z, i, self.omega)
             #print(self.domega(self.z, i))
